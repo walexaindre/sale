@@ -1,0 +1,80 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "transaction.schema.json",
+    "title": "Transaction",
+    "description": "Collection of parameters for a transaction in my virtual store",
+    "type": "object",
+    "properties": {
+        "transactionId": {
+            "type": "string",
+            "description": "Unique identifier for the transaction",
+            "example": "1234567890"
+        },
+        "itemId": {
+            "type": "string",
+            "description": "Unique identifier for the item being purchased",
+            "example": "item-12345"
+        },
+        "quantity": {
+            "type": "integer",
+            "description": "Quantity of the item being purchased",
+            "minimum": 1,
+            "example": 2
+        },
+        "totalPrice": {
+            "type": "number",
+            "description": "Total price of the transaction",
+            "minimum": 0,
+            "example": 31.98
+        },
+        "transactionDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time of the transaction",
+            "example": "2023-10-01T12:34:56Z"
+        },
+        "paymentMethod": {
+            "type": "string",
+            "description": "Payment method used for the transaction",
+            "enum": [
+                "cash",
+                "ath_movil",
+                "zelle",
+                "venmo",
+                "apple_pay",
+                "google_pay",
+                "crypto",
+                "wire_transfer",
+                "credit_card",
+                "debit_card",
+                "paypal"
+            ],
+            "example": "credit_card"
+        },
+        "fullfillmentMethod": {
+            "type": "string",
+            "description": "Fulfillment method for the transaction",
+            "enum": [
+                "pickup",
+                "delivery",
+                "shipping"
+            ],
+            "example": "delivery"
+        },
+        "status": {
+            "type": "string",
+            "description": "Status of the transaction",
+            "enum": [
+                "pending",
+                "completed",
+                "canceled"
+            ],
+            "example": "completed"
+        },
+        "buyerName": {
+            "type": "string",
+            "description": "Name of the buyer",
+            "example": "John Doe"
+        }
+    }
+}

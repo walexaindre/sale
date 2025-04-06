@@ -1,0 +1,219 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "#id": "item.schema.json",
+    "title": "Item for sale",
+    "description": "Collection of parameters for an item in my virtual store",
+    "type": "object",
+    "properties": {
+        "itemId": {
+            "type": "string",
+            "description": "Unique identifier for the item",
+            "example": "12345"
+        },
+        "name": {
+            "type": "string",
+            "description": "Name of the item",
+            "minLength": 2,
+            "example": "Laptop"
+        },
+        "price": {
+            "type": "number",
+            "description": "Price of the item",
+            "minimum": 0,
+            "example": 15.99,
+            "default": 1
+        },
+        "quantity": {
+            "type": "integer",
+            "description": "Quantity of the item in stock",
+            "minimum": 0,
+            "example": 10,
+            "default": 0
+        },
+        "shortdescription": {
+            "type": "string",
+            "description": "Short description of the item with relevant details and features",
+            "minLength": 0,
+            "example": "A high-performance laptop with 16GB RAM and 512GB SSD."
+        },
+        "missingparts": {
+            "type": "array",
+            "description": "List of missing parts of the item",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "part": {
+                        "type": "string",
+                        "description": "Name of the missing part",
+                        "example": "battery"
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL of the image of the missing part",
+                        "example": "https://example.com/missing-part.jpg"
+                    }
+                }
+            },
+            "example": [
+                {
+                    "part": "battery",
+                    "image": "https://example.com/missing-part.jpg"
+                },
+                {
+                    "part": "charger",
+                    "image": "https://example.com/charger.jpg"
+                }
+            ]
+        },
+        "defects": {
+            "type": "array",
+            "description": "List of defects of the item",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "defect": {
+                        "type": "string",
+                        "description": "Description of the defect",
+                        "example": "screen scratches"
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL of the image of the defect",
+                        "example": "https://example.com/defect.jpg"
+                    }
+                }
+            },
+            "example": [
+                {
+                    "defect": "screen scratches",
+                    "image": "https://example.com/defect.jpg"
+                },
+                {
+                    "defect": "keyboard not working",
+                    "image": "https://example.com/keyboard-defect.jpg"
+                }
+            ]
+        },
+        "accessories": {
+            "type": "array",
+            "description": "List of accessories included with the item",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "accessory": {
+                        "type": "string",
+                        "description": "Name of the accessory",
+                        "example": "mouse"
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL of the image of the accessory",
+                        "example": "https://example.com/accessory.jpg"
+                    }
+                }
+            },
+            "example": [
+                {
+                    "accessory": "mouse",
+                    "image": "https://example.com/accessory.jpg"
+                },
+                {
+                    "accessory": "keyboard",
+                    "image": "https://example.com/keyboard.jpg"
+                }
+            ]
+        },
+        "longdescription": {
+            "type": "string",
+            "description": "Detailed description of the item",
+            "minLength": 0,
+            "example": "This laptop is equipped with the latest Intel processor, a high-resolution display, and a long-lasting battery."
+        },
+        "condition": {
+            "type": "string",
+            "description": "Condition of the item (new, used, refurbished)",
+            "enum": [
+                "new",
+                "open box",
+                "used",
+                "refurbished"
+            ],
+            "example": "new"
+        },
+        "brand": {
+            "type": "string",
+            "description": "Brand of the item",
+            "minLength": 2,
+            "example": "Dell"
+        },
+        "model": {
+            "type": "string",
+            "description": "Model of the item",
+            "minLength": 2,
+            "example": "XPS 13"
+        },
+        "thumbnail": {
+            "type": "string",
+            "description": "URL of the thumbnail of the item",
+            "format": "uri",
+            "example": "https://example.com/laptop.jpg"
+        },
+        "tags": {
+            "type": "array",
+            "description": "List of tags associated with the item",
+            "items": {
+                "type": "string"
+            },
+            "example": [
+                "electronics",
+                "laptop",
+                "computer"
+            ]
+        },
+        "complementaryImages": {
+            "type": "array",
+            "description": "List of URLs of detailed pictures of the item",
+            "items": {
+                "type": "string",
+                "format": "uri"
+            },
+            "example": [
+                "https://example.com/laptop1.jpg",
+                "https://example.com/laptop2.jpg"
+            ]
+        },
+        "priceNew": {
+            "type": "number",
+            "description": "Price of the item when new",
+            "minimum": 0,
+            "example": 999.99
+        },
+        "urlNew": {
+            "type": "string",
+            "description": "URL of the item when new",
+            "format": "uri",
+            "example": "https://example.com/laptop-new"
+        },
+        "category": {
+            "$ref": "category.schema.json"
+        },
+        "location": {
+            "type": "string",
+            "description": "Location of the item",
+            "minLength": 2,
+            "example": "New York, NY"
+        },
+        "transactionStatus": {
+            "type": "array",
+            "description": "List of transaction statuses for the item",
+            "items": {
+                "type": "string",
+                "description": "Transaction ID of the sale",
+                "example": "transaction12345"
+            }
+        }
+    }
+}

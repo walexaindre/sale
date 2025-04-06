@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "category.schema.json",
+    "title": "Category",
+    "description": "Collection of parameters for a category in my virtual store",
+    "type": "string",
+    "enum": [
+        "electronics",
+        "furniture",
+        "clothing",
+        "toys",
+        "books",
+        "sports",
+        "automotive",
+        "health",
+        "beauty",
+        "groceries",
+        "jewelry",
+        "home",
+        "garden",
+        "other"
+    ]
+}
