@@ -18,10 +18,10 @@
 <div class="flex justify-center">
     <div class="card card-dash bg-base-300 w-96 shadow-sm">
         <div class="card-body">
-            <button class="btn btn-ghost h-fit relative">
+            <button class="btn btn-ghost h-fit relative rounded-none">
                 <figure>
                     <img src={img} alt={imgdesc} />
-                    {#if quantity == 0}
+                    {#if quantity <= 0}
                         <div
                             class=" absolute text-5xl text-error bg-error-content w-full py-2 -rotate-45 text-center"
                         >
@@ -45,11 +45,11 @@
             </p>
             <div class="flex flex-wrap gap-2">
                 {#if condition == "new"}
-                    <div class="badge badge-info">New</div>
+                    <div class="badge badge-success">New</div>
                 {:else if condition == "used"}
                     <div class="badge badge-info">Used</div>
                 {:else}
-                    <div class="badge badge-info">Refurbished</div>
+                    <div class="badge badge-warning">Refurbished</div>
                 {/if}
                 {#if category}
                     <div class="badge badge-soft badge-warning">
