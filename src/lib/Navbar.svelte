@@ -11,7 +11,7 @@
         </button>
 
         <button
-            class="btn {transition.showDetailed ? '' : 'hidden'}"
+            class="btn btn-info {transition.showDetailed ? '' : 'hidden'}"
             onclick={toggleDetailed}>Regresar</button
         >
     </div>

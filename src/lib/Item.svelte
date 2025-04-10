@@ -4,7 +4,7 @@
 
     let { item }: { item: SystemInfo } = $props();
 
-    let quantity = item.getLeft();
+    let quantity = $derived(item.getLeft());
 
     function showDetails() {
         transition.itemId = item.itemId;

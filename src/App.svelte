@@ -9,6 +9,8 @@
 
   let system = new parser.System();
   system.generateRandomData(50);
+
+  console.log("Ccall");
   //console.log(system.getAllItems());
   //console.log(system.getAllTransactions());
   //  <DetailedItem name="alpha" img="luggage.svg" imgdesc="sale" price="300"
