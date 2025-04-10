@@ -1,26 +1,25 @@
 <script lang="ts">
-    let {
-        name,
-        description = "quo erat demostratum",
-        img,
-        imgdesc,
-        price,
-        quantity = 0,
-        tags = ["alpha", "beta prunning", "eta gama eta"],
-        category = "a",
-        condition = "new",
-    } = $props();
-    function a() {
-        console.log("hello");
+    import type { SystemInfo } from "../parser";
+
+    let { item, itemId = $bindable() }: { item: SystemInfo; itemId: string } =
+        $props();
+
+    let quantity = item.getLeft();
+
+    function showDetails() {
+        itemId = item.itemId;
     }
 </script>
 
 <div class="flex justify-center">
     <div class="card card-dash bg-base-300 w-96 shadow-sm">
         <div class="card-body">
-            <button class="btn btn-ghost h-fit relative rounded-none">
+            <button
+                class="btn btn-ghost h-fit relative rounded-none"
+                onclick={showDetails}
+            >
                 <figure>
-                    <img src={img} alt={imgdesc} />
+                    <img src={item.thumbnailUrl} alt={item.shortDescription} />
                     {#if quantity <= 0}
                         <div
                             class=" absolute text-5xl text-error bg-error-content w-full py-2 -rotate-45 text-center"
@@ -31,32 +30,32 @@
                 </figure>
             </button>
             <div class="flex justify-between">
-                <h2 class="text-2xl font-bold">{name}</h2>
+                <h2 class="text-2xl font-bold">{item.name}</h2>
                 {#if quantity > 0}
-                    <span class="text-2xl text-secondary">${price}</span>
+                    <span class="text-2xl text-secondary">${item.price}</span>
                 {:else}
                     <span class="text-2xl text-secondary line-through"
-                        >${price}</span
+                        >${item.price}</span
                     >
                 {/if}
             </div>
             <p>
-                {description}
+                {item.shortDescription}
             </p>
             <div class="flex flex-wrap gap-2">
-                {#if condition == "new"}
+                {#if item.condition == "new"}
                     <div class="badge badge-success">New</div>
-                {:else if condition == "used"}
+                {:else if item.condition == "used"}
                     <div class="badge badge-info">Used</div>
                 {:else}
                     <div class="badge badge-warning">Refurbished</div>
                 {/if}
-                {#if category}
+                {#if item.category}
                     <div class="badge badge-soft badge-warning">
-                        {category}
+                        {item.category}
                     </div>
                 {/if}
-                {#each tags as tag}
+                {#each item.tags as tag}
                     <div class="badge badge-outline badge-primary">
                         {tag}
                     </div>

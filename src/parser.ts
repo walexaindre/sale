@@ -379,6 +379,7 @@ export class System {
     systemInfo: SystemInfo[];
     system: { [key: string]: SystemInfo };
 
+
     search(text: string): SystemInfo[] {
         return this.systemInfo.filter(systemInfo => systemInfo.name.toLowerCase().includes(text.toLowerCase())
             || systemInfo.itemId.toLowerCase().includes(text.toLowerCase())
@@ -394,6 +395,10 @@ export class System {
     constructor() {
         this.systemInfo = [];
         this.system = {};
+    }
+
+    getItem(itemId: string): SystemInfo | null {
+        return this.system[itemId] || null;
     }
 
     private locationOf(element: SystemInfo, start: number, end: number): number {
