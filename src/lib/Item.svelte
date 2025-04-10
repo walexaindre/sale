@@ -1,13 +1,14 @@
 <script lang="ts">
     import type { SystemInfo } from "../parser";
+    import { transition } from "./Transition.svelte";
 
-    let { item, itemId = $bindable() }: { item: SystemInfo; itemId: string } =
-        $props();
+    let { item }: { item: SystemInfo } = $props();
 
     let quantity = item.getLeft();
 
     function showDetails() {
-        itemId = item.itemId;
+        transition.itemId = item.itemId;
+        transition.showDetailed = !transition.showDetailed;
     }
 </script>
 

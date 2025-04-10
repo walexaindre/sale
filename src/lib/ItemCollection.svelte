@@ -1,19 +1,18 @@
 <script lang="ts">
     import type { SystemInfo } from "../parser";
     import Item from "./Item.svelte";
+
+    import { transition } from "./Transition.svelte";
+
     let {
-        itemId = $bindable(),
-        showDetailed = $bindable(),
         result = $bindable(),
     }: {
-        itemId: string;
-        showDetailed: boolean;
         result: SystemInfo[];
     } = $props();
 </script>
 
 <div
-    class="grid grid-cols-[repeat(auto-fill,minmax(384px,1fr))] gap-4 p-4 {showDetailed
+    class="grid grid-cols-[repeat(auto-fill,minmax(384px,1fr))] gap-4 p-4 {transition.showDetailed
         ? 'hidden'
         : ''}"
 >
@@ -25,6 +24,6 @@
         </div>
     {/if}
     {#each result as item}
-        <Item bind:itemId {item}></Item>
+        <Item {item}></Item>
     {/each}
 </div>

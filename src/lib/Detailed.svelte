@@ -1,15 +1,12 @@
 <script lang="ts">
     import { System, SystemInfo } from "../parser";
-    let {
-        itemId = $bindable(),
-        system = $bindable(),
-        showDetailed = $bindable(),
-    }: { itemId: string; system: System; showDetailed: boolean } = $props();
+    import { transition } from "./Transition.svelte";
+    let { system = $bindable() }: { system: System } = $props();
 
-    let item: SystemInfo | null = system.getItem(itemId);
+    let item: SystemInfo | null = $derived(system.getItem(transition.itemId));
 </script>
 
-<div class=" {showDetailed ? '' : 'hidden'}">
+<div class=" {transition.showDetailed ? '' : 'hidden'}">
     {#if item}
         There is something
     {:else}
