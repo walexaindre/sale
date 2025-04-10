@@ -347,7 +347,12 @@ export class SystemInfo extends Item {
         return this.soldOut;
     }
 
-    //Implement comparison
+
+    getLeft(): number {
+        const totalSold = this.transactions.filter(transaction => transaction.status === "completed").reduce((acc, transaction) => acc + transaction.quantity, 0);
+        return this.quantity - totalSold;
+    }
+
     compareTo(other: SystemInfo): number {
         if (this.soldOut && !other.soldOut) {
             return 1;
@@ -369,8 +374,6 @@ export class SystemInfo extends Item {
     }
 
 }
-
-
 
 export class System {
     systemInfo: SystemInfo[];
@@ -394,10 +397,12 @@ export class System {
     }
 
     private locationOf(element: SystemInfo, start: number, end: number): number {
+        if (this.systemInfo.length === 0) return -1;
         var pivot = Math.floor(start + (end - start) / 2);
         if (this.systemInfo[pivot] === element) return pivot;
-        if (end - start <= 1)
+        if (end - start <= 1) {
             return this.systemInfo[pivot].greaterThan(element) ? pivot - 1 : pivot;
+        }
         if (this.systemInfo[pivot].lessThan(element)) {
             return this.locationOf(element, pivot, end);
         } else {
