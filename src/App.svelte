@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Cons from "./Constants";
   import * as parser from "./parser";
-  import ImageHandler from "./lib/ImageHandler.svelte";
+  import ImageHandler from "./lib/ImageView.svelte";
   import Detailed from "./lib/Detailed.svelte";
   import ItemCollection from "./lib/ItemCollection.svelte";
   import Navbar from "./lib/Navbar.svelte";
@@ -33,13 +33,6 @@
   $effect(() => {
     result = system.search(searchText);
   });
-
-  function showModal() {
-    const modal = document.getElementById("img_modal") as HTMLDialogElement;
-    if (modal) {
-      modal.showModal();
-    }
-  }
 </script>
 
 <Navbar bind:searchText></Navbar>
