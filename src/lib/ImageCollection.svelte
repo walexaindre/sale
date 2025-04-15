@@ -14,7 +14,7 @@
             </div>
         {/if}
         {#each result as item}
-            <Image></Image>
+            <Image imgSrc={item}></Image>
         {/each}
     </div>
 </div>

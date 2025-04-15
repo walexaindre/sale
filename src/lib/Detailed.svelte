@@ -2,15 +2,13 @@
     import { System, SystemInfo } from "../parser";
     import Image from "./Image.svelte";
     import ImageCollection from "./ImageCollection.svelte";
+    import { imageSrc } from "./ImageStore.svelte";
+    import PartDisplay from "./PartDisplay.svelte";
     import { transition } from "./Transition.svelte";
     let { system = $bindable() }: { system: System } = $props();
 
     let item: SystemInfo | null = $derived(system.getItem(transition.itemId));
 </script>
-
-<div class=" text-center text-2xl text-accent">Photos</div>
-
-<ImageCollection result={[1, 1, 2, 1, 1, 1, 1]}></ImageCollection>
 
 <div class=" {transition.showDetailed ? '' : 'hidden'}">
     {#if item}
@@ -44,7 +42,11 @@
                         </tr>
                         <tr>
                             <th class=" text-xl">Retail Store</th>
-                            <td><a href={item.urlNew}>{item.urlNew}</a></td>
+                            <td
+                                ><a class="link" href={item.urlNew}
+                                    >{item.urlNew}</a
+                                ></td
+                            >
                         </tr>
                     </tbody>
                 </table>
@@ -55,7 +57,9 @@
                     <tbody>
                         <tr>
                             <th class=" text-xl">Category</th>
-                            <td class="prose">{item.category}</td>
+                            <td class="prose">
+                                {item.category}
+                            </td>
                         </tr>
                         <tr>
                             <th class=" text-xl">Quantity</th>
@@ -78,6 +82,44 @@
                 </table>
             </div>
         </div>
+
+        <div class=" text-center text-2xl text-accent">Photos</div>
+
+        <ImageCollection
+            result={[item.thumbnailUrl, ...item.complementaryImages]}
+        ></ImageCollection>
+
+        {#if item.defects.length > 0}
+            <div class=" text-center text-2xl text-accent">Defects</div>
+            <div
+                class="grid grid-cols-[repeat(auto-fill,minmax(384px,1fr))] gap-4 p-4"
+            >
+                {#each item.defects as damage}
+                    <PartDisplay part={damage}></PartDisplay>
+                {/each}
+            </div>
+        {/if}
+
+        {#if item.missingParts.length > 0}
+            <div class=" text-center text-2xl text-accent">Missing Parts</div>
+            <div
+                class="grid grid-cols-[repeat(auto-fill,minmax(384px,1fr))] gap-4 p-4"
+            >
+                {#each item.missingParts as missing}
+                    <PartDisplay part={missing}></PartDisplay>
+                {/each}
+            </div>
+        {/if}
+        {#if item.accessories.length > 0}
+            <div class=" text-center text-2xl text-accent">Accesories</div>
+            <div
+                class="grid grid-cols-[repeat(auto-fill,minmax(384px,1fr))] gap-4 p-4"
+            >
+                {#each item.accessories as accessory}
+                    <PartDisplay part={accessory}></PartDisplay>
+                {/each}
+            </div>
+        {/if}
     {:else}
         <div class="alert alert-warning shadow-lg">
             <div>

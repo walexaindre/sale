@@ -2,10 +2,10 @@
     import { transition } from "./Transition.svelte";
     import { imageSrc } from "./ImageStore.svelte";
 
-    let imgSrc = $derived(imageSrc.src);
+    let { imgSrc }: { imgSrc: string } = $props();
 
     function updateImageSrc() {
-        imageSrc.src = "https://picsum.photos/512/512";
+        imageSrc.src = imgSrc;
         const modal = document.getElementById("img_modal") as HTMLDialogElement;
         if (modal) {
             modal.showModal();

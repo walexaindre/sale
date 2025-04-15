@@ -10,6 +10,11 @@
         transition.itemId = item.itemId;
         transition.showDetailed = !transition.showDetailed;
     }
+
+    let loadingThumbnail = $state(true);
+    function loaded() {
+        loadingThumbnail = false;
+    }
 </script>
 
 <div class="flex justify-center">
@@ -20,7 +25,16 @@
                 onclick={showDetails}
             >
                 <figure>
-                    <img src={item.thumbnailUrl} alt={item.shortDescription} />
+                    <div
+                        class="skeleton w-[300px] h-[300px] {loadingThumbnail
+                            ? ''
+                            : 'hidden'}"
+                    ></div>
+                    <img
+                        src={item.thumbnailUrl}
+                        alt={item.shortDescription}
+                        onload={loaded}
+                    />
                     {#if quantity <= 0}
                         <div
                             class=" absolute text-5xl text-error bg-error-content w-full py-2 -rotate-45 text-center"

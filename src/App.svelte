@@ -5,7 +5,7 @@
   import Detailed from "./lib/Detailed.svelte";
   import ItemCollection from "./lib/ItemCollection.svelte";
   import Navbar from "./lib/Navbar.svelte";
-  import { transition } from "./lib/Transition.svelte";
+  import { transition, imageSrc } from "./lib/Transition.svelte";
 
   let system = new parser.System();
   system.generateRandomData(50);
@@ -26,8 +26,6 @@
 
   let searchText = $state("");
 
-  let imageSrc = $state("https://picsum.photos/512/512");
-
   let result: parser.SystemInfo[] = $state([]);
 
   $effect(() => {
@@ -41,4 +39,4 @@
 
 <Detailed {system}></Detailed>
 
-<ImageHandler bind:imgSrc={imageSrc}></ImageHandler>
+<ImageHandler bind:imgSrc={imageSrc.src}></ImageHandler>

@@ -6,10 +6,6 @@
 
 <div class="navbar text-neutral-content z-20 sticky top-0 bg-base-100">
     <div class="navbar-start">
-        <button class="btn btn-square btn-ghost mx-2 stroke-neutral">
-            {@html Mesh}
-        </button>
-
         <button
             class="btn btn-info {transition.showDetailed ? '' : 'hidden'}"
             onclick={toggleDetailed}>Regresar</button
