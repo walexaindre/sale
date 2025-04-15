@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { SystemInfo } from "../parser";
+    import type { SystemInfo } from "../../shared/parser";
     import { transition } from "./Transition.svelte";
 
     let { item }: { item: SystemInfo } = $props();

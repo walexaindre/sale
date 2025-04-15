@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as Cons from "./Constants";
-  import * as parser from "./parser";
+  import * as parser from "../shared/parser";
   import ImageHandler from "./lib/ImageView.svelte";
   import Detailed from "./lib/Detailed.svelte";
   import ItemCollection from "./lib/ItemCollection.svelte";

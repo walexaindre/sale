@@ -16,5 +16,14 @@
     "isolatedModules": true,
     "moduleDetection": "force"
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "registry/**/*.ts",
+    "shared/parser.ts",
+    "registry/**/*.svelte",
+    "registry/**/*.js",
+    "shared/parser.ts"
+  ]
 }
