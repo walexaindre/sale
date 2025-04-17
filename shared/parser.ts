@@ -218,6 +218,30 @@ export class Item {
     getLocation(): string {
         return this.location;
     }
+
+    static emptyItem(): Item {
+        return new Item(
+            "",
+            "",
+            0,
+            0,
+            "",
+            "",
+            [],
+            [],
+            [],
+            "",
+            "",
+            "",
+            "",
+            [],
+            [],
+            0,
+            "",
+            "",
+            ""
+        );
+    }
 }
 
 export class Pagination {
