@@ -21,9 +21,10 @@
     "src/**/*.js",
     "src/**/*.svelte",
     "registry/**/*.ts",
-    "shared/parser.ts",
+    "shared/parser.svelte.ts",
     "registry/**/*.svelte",
     "registry/**/*.js",
-    "shared/parser.ts"
+    "shared/Constants.ts",
+    "shared/Constants.ts"
   ]
 }

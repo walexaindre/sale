@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { SystemInfo } from "../../shared/parser";
+    import type { SystemInfo } from "../../shared/parser.svelte";
     import Item from "./Item.svelte";
 
     import { transition } from "./Transition.svelte";

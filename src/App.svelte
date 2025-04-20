@@ -1,14 +1,13 @@
 <script lang="ts">
-  import * as Cons from "./Constants";
-  import * as parser from "../shared/parser";
+  import * as Cons from "../shared/Constants";
+  import * as parser from "../shared/parser.svelte";
   import ImageHandler from "./lib/ImageView.svelte";
   import Detailed from "./lib/Detailed.svelte";
   import ItemCollection from "./lib/ItemCollection.svelte";
   import Navbar from "./lib/Navbar.svelte";
   import { transition, imageSrc } from "./lib/Transition.svelte";
 
-  let system = new parser.System();
-  system.generateRandomData(50);
+  let system = parser.System.randomSystem(50);
 
   console.log("Ccall");
   //console.log(system.getAllItems());

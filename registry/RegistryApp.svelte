@@ -1,10 +1,11 @@
 <script lang="ts">
-    import * as parser from "../shared/parser";
+    import * as parser from "../shared/parser.svelte";
     import CreateItem from "./CreateItem.svelte";
     import Navbar from "./Navbar.svelte";
     import { Data, store, Actions } from "./Store.svelte";
+    import SummarizedItem from "./SummarizedItem.svelte";
 
-    let system = new parser.System();
+    //let system = new parser.System();
 
     function parsePreviousFile() {}
 
@@ -14,7 +15,7 @@
 </script>
 
 <Navbar></Navbar>
-
-<CreateItem></CreateItem>
-
-<div></div>
+<div class="flex flex-row gap-4 justify-center items-center py-4">
+    <SummarizedItem />
+    <CreateItem />
+</div>

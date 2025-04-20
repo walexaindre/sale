@@ -1,4 +1,4 @@
-import * as Const from "./Constants";
+import * as Const from "../shared/Constants";
 
 //Based on transaction.schema.json
 export class Transaction {
@@ -713,4 +713,4 @@ export class SystemHandler {
             }
         }
     }
-}     
+}

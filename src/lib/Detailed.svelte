@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { System, SystemInfo } from "../../shared/parser";
+    import { System, SystemInfo } from "../../shared/parser.svelte";
     import Image from "./Image.svelte";
     import ImageCollection from "./ImageCollection.svelte";
     import { imageSrc } from "./ImageStore.svelte";

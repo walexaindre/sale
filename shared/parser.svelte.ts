@@ -1,4 +1,4 @@
-import * as Const from "../src/Constants";
+import * as Const from "./Constants";
 
 export class Transaction {
     transactionId: string;
@@ -74,24 +74,80 @@ export class Transaction {
     static fromJsonArray(jsonArray: any[]): Transaction[] {
         return jsonArray.map((json) => Transaction.fromJson(json));
     }
+
+    static randomTransaction(item: Item, index: number = 1): Transaction {
+        const transactionId = `transaction-${index}`;
+        const itemId = item.itemId;
+        const quantity = Math.floor(Math.random() * 10) + 1;
+        const description = `Transaction ${index} for ${itemId}`;
+        const category = Const.CATEGORIES[Math.floor(Math.random() * Const.CATEGORIES.length)];
+        const totalPrice = item.price * quantity;
+        const transactionDate = new Date();
+        const paymentMethod = Const.PAYMENT_METHODS[Math.floor(Math.random() * Const.PAYMENT_METHODS.length)];
+        const fullfillmentMethod = Const.FULLFILLMENT_METHODS[Math.floor(Math.random() * Const.FULLFILLMENT_METHODS.length)];
+        const status = Math.random() > 0.5 ? "completed" : "pending";
+        const buyerName = `Buyer ${Math.floor(Math.random() * 100)}`;
+        return new Transaction(
+            transactionId,
+            itemId,
+            quantity,
+            description,
+            category,
+            totalPrice,
+            transactionDate,
+            paymentMethod,
+            fullfillmentMethod,
+            status,
+            buyerName
+        );
+    }
+
+    static sampleTransaction(): Transaction {
+        return new Transaction(
+            "transaction-1",
+            "item-1",
+            2,
+            "Sample transaction",
+            "Category A",
+            200,
+            new Date(),
+            "Credit Card",
+            "Shipping",
+            "completed",
+            "John Doe"
+        );
+    }
 }
 
 export class Part {
     partName: string;
     description: string;
-    imageUrl: string;
+    imageUrls: string[];
     available: boolean;
 
     constructor(
         partName: string,
         description: string,
-        imageUrl: string,
+        imageUrls: string[],
         available: boolean
     ) {
         this.partName = partName;
         this.description = description;
-        this.imageUrl = imageUrl;
+        this.imageUrls = imageUrls;
         this.available = available;
+    }
+
+    static randomPart(index: number): Part {
+        const fmt = new Intl.NumberFormat("en-US", {
+            minimumIntegerDigits: 3
+        });
+
+
+        const partName = `Part ${fmt.format(index)}`;
+        const description = `Description for ${partName}`;
+        const imageUrls = ["https://picsum.photos/512/512", "https://picsum.photos/512/512"];
+        const available = Math.random() > 0.5;
+        return new Part(partName, description, imageUrls, available);
     }
 }
 
@@ -219,6 +275,49 @@ export class Item {
         return this.location;
     }
 
+    static randomItem(index: number = 1): Item {
+        const itemId = `item-${index}`;
+        const name = `Item ${index}`;
+        const price = Math.floor(Math.random() * 100) + 1;
+        const quantity = Math.floor(Math.random() * 10) + 1;
+        const shortDescription = `Short description for ${name}`;
+        const longDescription = `Long description for ${name}`;
+        const missingParts: Part[] = Array.from({ length: Math.floor(Math.random() * 5) }, (_, i) => Part.randomPart(i));
+        const defects: Part[] = Array.from({ length: Math.floor(Math.random() * 5) }, (_, i) => Part.randomPart(i));
+        const accessories: Part[] = Array.from({ length: Math.floor(Math.random() * 5) }, (_, i) => Part.randomPart(i));
+        const condition = Const.CONDITIONS[Math.floor(Math.random() * Const.CONDITIONS.length)];
+        const brand = `Brand ${Math.floor(Math.random() * 10)}`;
+        const model = `Model ${Math.floor(Math.random() * 10)}`;
+        const thumbnailUrl = "https://picsum.photos/512/512";
+        const tags: string[] = Array.from({ length: Math.floor(Math.random() * 5) }, (_, i) => `Tag ${i}`);
+        const complementaryImages: string[] = Array.from({ length: Math.floor(Math.random() * 5) }, (_, i) => "https://picsum.photos/512/512");
+        const priceNew = Math.floor(Math.random() * 100) + 1;
+        const urlNew = `http://example.com/${itemId}-new.jpg`;
+        const category = Const.CATEGORIES[Math.floor(Math.random() * Const.CATEGORIES.length)];
+        const location = `Location ${Math.floor(Math.random() * 10)}`;
+        return new Item(
+            itemId,
+            name,
+            price,
+            quantity,
+            shortDescription,
+            longDescription,
+            missingParts,
+            defects,
+            accessories,
+            condition,
+            brand,
+            model,
+            thumbnailUrl,
+            tags,
+            complementaryImages,
+            priceNew,
+            urlNew,
+            category,
+            location
+        );
+    }
+
     static emptyItem(): Item {
         return new Item(
             "",
@@ -245,53 +344,57 @@ export class Item {
 }
 
 export class Pagination {
-    page: number;
-    itemsPerPage: number;
-    totalItems: number;
+    page: number = $state(1);
+    itemsPerPage: number = $state(0);
+    private reference: System = $state(System.emptySystem());
+    totalItems: number = $derived(this.reference.systemInfo.length)
 
-    constructor(page: number, itemsPerPage: number, totalItems: number) {
-        this.page = page;
+    constructor(page: number, itemsPerPage: number, system: System) {
+        if (page < 1) {
+            page = 1;
+        }
+        if (itemsPerPage < 1) {
+            itemsPerPage = 1;
+        }
+
         this.itemsPerPage = itemsPerPage;
-        this.totalItems = totalItems;
+        this.page = page;
+        this.reference = system;
     }
 
-    getTotalPages(): number {
-        return Math.ceil(this.totalItems / this.itemsPerPage);
+    totalPages: number = $derived(Math.ceil(this.totalItems / this.itemsPerPage));
+
+    startIndex: number = $derived((this.page - 1) * this.itemsPerPage);
+
+    endIndex: number = $derived(Math.min(this.startIndex + this.itemsPerPage, this.totalItems));
+
+    hasNextPage: boolean = $derived(this.page < this.totalPages);
+
+    hasPreviousPage: boolean = $derived(this.page > 1);
+
+    nextPage = () => {
+        if (this.hasNextPage) {
+            console.log("Next page", this.page);
+            ++this.page
+        }
+    };
+
+    previousPage = () => {
+        if (this.hasPreviousPage) {
+            --this.page;
+        }
     }
 
-    getStartIndex(): number {
-        return (this.page - 1) * this.itemsPerPage;
-    }
-    getEndIndex(): number {
-        return Math.min(this.getStartIndex() + this.itemsPerPage, this.totalItems);
-    }
-    getCurrentPageItems<T>(items: T[]): T[] {
-        return items.slice(this.getStartIndex(), this.getEndIndex());
-    }
-    hasNextPage(): boolean {
-        return this.page < this.getTotalPages();
-    }
-    hasPreviousPage(): boolean {
-        return this.page > 1;
-    }
-    nextPage(): void {
-        if (this.hasNextPage()) {
-            this.page++;
-        }
-    }
-    previousPage(): void {
-        if (this.hasPreviousPage()) {
-            this.page--;
-        }
-    }
     resetPage(): void {
         this.page = 1;
     }
+
     setPage(page: number): void {
-        if (page > 0 && page <= this.getTotalPages()) {
+        if (page > 0 && page <= this.totalPages) {
             this.page = page;
         }
     }
+
     setItemsPerPage(itemsPerPage: number): void {
         if (itemsPerPage > 0) {
             this.itemsPerPage = itemsPerPage;
@@ -302,9 +405,9 @@ export class Pagination {
             this.totalItems = totalItems;
         }
     }
-    getCurrentPage(): number {
-        return this.page;
-    }
+
+    currentPage: number = $derived(this.page);
+
     getItemsPerPage(): number {
         return this.itemsPerPage;
     }
@@ -312,24 +415,95 @@ export class Pagination {
         return this.totalItems;
     }
     getCurrentPageInfo(): string {
-        return `Page ${this.page} of ${this.getTotalPages()} (${this.totalItems} items total)`;
+        return `Page ${this.page} of ${this.totalPages} (${this.totalItems} items total)`;
     }
     getCurrentPageItemsCount(): number {
-        return this.getEndIndex() - this.getStartIndex();
+        return this.endIndex - this.startIndex;
     }
     getCurrentPageItemsInfo(): string {
-        return `Showing ${this.getCurrentPageItemsCount()} items on page ${this.page} of ${this.getTotalPages()}`;
+        return `Showing ${this.getCurrentPageItemsCount()} items on page ${this.page} of ${this.totalPages}`;
     }
+    getDebugInfo(): string {
+        return `Page: ${this.page}, Items per page: ${this.itemsPerPage}, Total items: ${this.totalItems}`;
+    }
+
+
+    debug(): string {
+        //All parameters
+        let debugInfo = `Page: ${this.page}, Items per page: ${this.itemsPerPage}, Total items: ${this.totalItems}\n`;
+
+        debugInfo += `Start index: ${this.startIndex}, End index: ${this.endIndex}\n`;
+        debugInfo += `Has next page: ${this.hasNextPage}, Has previous page: ${this.hasPreviousPage}\n`;
+        return debugInfo;
+    }
+}
+
+function locationOf(element: SystemInfo, store: Array<SystemInfo>, start: number, end: number): number {
+    if (store.length === 0) return -1;
+    var pivot = Math.floor(start + (end - start) / 2);
+    if (store[pivot] === element) return pivot;
+    if (end - start <= 1) {
+        return store[pivot].greaterThan(element) ? pivot - 1 : pivot;
+    }
+    if (store[pivot].lessThan(element)) {
+        return locationOf(element, store, pivot, end);
+    } else {
+        return locationOf(element, store, start, pivot);
+    }
+}
+
+function insert(element: SystemInfo, store: Array<SystemInfo>): void {
+    store.splice(locationOf(element, store, 0, store.length) + 1, 0, element);
+}
+
+function cyrb53(str: string, seed: number = 0) {
+    let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+    for (let i = 0, ch; i < str.length; i++) {
+        ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+    h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+    h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+
+    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+};
+
+function getNewItemId(kvstore: { [key: string]: SystemInfo }, store: Array<SystemInfo>): string {
+    let index = store.length;
+    let itemId = "";
+    do {
+        index = cyrb53(`${index}${Math.random()}`);
+        itemId = "item-" + index;
+    }
+    while (kvstore[itemId] !== null);
+
+    return itemId;
 }
 
 export class SystemInfo extends Item {
     public transactions: Transaction[];
     public soldOut: boolean;
-
+    public createdAt: Date;
+    public updatedAt: Date;
     constructor(item: Item, transactions: Transaction[]) {
         super(item.itemId, item.name, item.price, item.quantity, item.shortDescription, item.longDescription, item.missingParts, item.defects, item.accessories, item.condition, item.brand, item.model, item.thumbnailUrl, item.tags, item.complementaryImages, item.priceNew, item.urlNew, item.category, item.location);
         this.transactions = transactions;
         this.soldOut = this.calculateSoldOut();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+    }
+
+    static randomSystemInfo(index: number = 1): SystemInfo {
+        const item = Item.randomItem(index);
+        const transactions: Transaction[] = Array.from({ length: Math.floor(Math.random() * item.quantity) }, (_, i) => Transaction.randomTransaction(item, i));
+        return new SystemInfo(item, transactions);
+    }
+
+    static emptySystemInfo(): SystemInfo {
+        return new SystemInfo(Item.emptyItem(), []);
     }
 
     private calculateSoldOut(): boolean {
@@ -340,11 +514,13 @@ export class SystemInfo extends Item {
     addTransaction(transaction: Transaction): void {
         this.transactions.push(transaction);
         this.soldOut = this.calculateSoldOut();
+        this.updatedAt = new Date();
     }
 
     addTransactions(transactions: Transaction[]): void {
         this.transactions.push(...transactions);
         this.soldOut = this.calculateSoldOut();
+        this.updatedAt = new Date();
     }
 
     removeTransaction(transactionId: string): void {
@@ -353,6 +529,7 @@ export class SystemInfo extends Item {
             this.transactions.splice(index, 1);
             this.soldOut = this.calculateSoldOut();
         }
+        this.updatedAt = new Date();
     }
 
     updateTransaction(transactionId: string, updatedTransaction: Transaction): void {
@@ -361,6 +538,7 @@ export class SystemInfo extends Item {
             this.transactions[index] = updatedTransaction;
             this.soldOut = this.calculateSoldOut();
         }
+        this.updatedAt = new Date();
     }
 
     getTransactions(): Transaction[] {
@@ -371,19 +549,20 @@ export class SystemInfo extends Item {
         return this.soldOut;
     }
 
-
     getLeft(): number {
         const totalSold = this.transactions.filter(transaction => transaction.status === "completed").reduce((acc, transaction) => acc + transaction.quantity, 0);
         return this.quantity - totalSold;
     }
-
-
 
     compareTo(other: SystemInfo): number {
         if (this.soldOut && !other.soldOut) {
             return 1;
         } else if (!this.soldOut && other.soldOut) {
             return -1;
+        } else if (this.createdAt < other.createdAt) {
+            return -1;
+        } else if (this.createdAt > other.createdAt) {
+            return 1;
         } else {
             return 0;
         }
@@ -392,19 +571,15 @@ export class SystemInfo extends Item {
     greaterThan(other: SystemInfo): boolean {
         return this.compareTo(other) > 0;
     }
+
     lessThan(other: SystemInfo): boolean {
         return this.compareTo(other) < 0;
     }
-    equals(other: SystemInfo): boolean {
-        return this.compareTo(other) === 0;
-    }
-
 }
 
 export class System {
-    systemInfo: SystemInfo[];
+    systemInfo: SystemInfo[] = $state([]);
     system: { [key: string]: SystemInfo };
-
 
     search(text: string): SystemInfo[] {
         return this.systemInfo.filter(systemInfo => systemInfo.name.toLowerCase().includes(text.toLowerCase())
@@ -440,6 +615,7 @@ export class System {
             return this.locationOf(element, start, pivot);
         }
     }
+
     private insert(element: SystemInfo): void {
         this.systemInfo.splice(this.locationOf(element, 0, this.systemInfo.length) + 1, 0, element);
     }
@@ -480,39 +656,11 @@ export class System {
         }
     }
 
-    sortByAvailability(): void {
-        this.systemInfo.sort((a, b) => {
-            if (a.soldOut && !b.soldOut) {
-                return 1;
-            } else if (!a.soldOut && b.soldOut) {
-                return -1;
-            } else {
-                return 0;
-            }
-        });
-    }
-
-    cyrb53(str: string, seed: number = 0) {
-        let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
-        for (let i = 0, ch; i < str.length; i++) {
-            ch = str.charCodeAt(i);
-            h1 = Math.imul(h1 ^ ch, 2654435761);
-            h2 = Math.imul(h2 ^ ch, 1597334677);
-        }
-        h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
-        h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-        h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
-        h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-
-        return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-    };
-
     getNewItemId(): string {
         let index = this.systemInfo.length;
         let itemId = "";
         do {
-            index = this.cyrb53(`${index}${Math.random()}`);
-            index = index % this.systemInfo.length;
+            index = cyrb53(`${index}${Math.random()}`);
             itemId = "item-" + index;
         }
         while (this.getItem(itemId) !== null);
@@ -520,81 +668,44 @@ export class System {
         return itemId;
     }
 
-    private generateRandomParts(amount: number): Part[] {
-        const parts: Part[] = [];
-        for (let i = 0; i < amount; i++) {
-            const partName = `Part ${i}`;
-            const description = `Description for ${partName}`;
-            const imageUrl = "https://picsum.photos/512/512";
-            const available = Math.random() > 0.5;
-            parts.push(new Part(partName, description, imageUrl, available));
+    addRandom(incr: number): void {
+        const store: Array<SystemInfo> = this.systemInfo.slice();
+        const system: { [key: string]: SystemInfo } = this.system;
+
+        const length = store.length;
+
+        for (let i: number = length; i < incr + length; ++i) {
+            const systemInfo = SystemInfo.randomSystemInfo(i);
+            insert(systemInfo, store);
+            system[systemInfo.itemId] = systemInfo;
         }
-        return parts;
+        this.systemInfo = store;
+        this.system = system;
+        console.log("Added...", incr, "items");
     }
 
-    private generateTags(amount: number): string[] {
-        const tags: string[] = [];
-        for (let i = 0; i < amount; i++) {
-            const tag = `Tag ${i}`;
-            tags.push(tag);
+    static randomSystem(size: number): System {
+        const store: Array<SystemInfo> = [];
+        const system: { [key: string]: SystemInfo } = {};
+
+        const sysInfo = new System()
+        for (let i = 0; i < size; ++i) {
+            const systemInfo = SystemInfo.randomSystemInfo(i);
+            insert(systemInfo, store);
+            system[systemInfo.itemId] = systemInfo;
         }
-        return tags;
+        sysInfo.system = system;
+        sysInfo.systemInfo = store;
+
+        return sysInfo;
     }
 
-    private generateComplementaryImages(amount: number): string[] {
-        const images: string[] = [];
-        for (let i = 0; i < amount; i++) {
-            const imageUrl = "https://picsum.photos/512/512";
-            images.push(imageUrl);
-        }
-        return images;
+    static emptySystem(): System {
+        return new System();
     }
 
-    generateRandomData(incr: number): void {
-        for (let i = 0; i < incr; i++) {
-            const itemId = `item-${i}`;
-            const name = `Item ${i}`;
-            const price = Math.floor(Math.random() * 100) + 1;
-            const quantity = Math.floor(Math.random() * 10) + 1;
-            const shortDescription = `Short description for ${name}`;
-            const longDescription = `Long description for ${name}`;
-            const missingParts: Part[] = this.generateRandomParts(Math.floor(Math.random() * 3));
-            const defects: Part[] = this.generateRandomParts(Math.floor(Math.random() * 3));
-            const accessories: Part[] = this.generateRandomParts(Math.floor(Math.random() * 3));
-            const condition = Const.CONDITIONS[Math.floor(Math.random() * Const.CONDITIONS.length)];
-            const brand = `Brand ${Math.floor(Math.random() * 10)}`;
-            const model = `Model ${Math.floor(Math.random() * 10)}`;
-            const thumbnailUrl = "https://picsum.photos/512/512";
-            const tags: string[] = this.generateTags(Math.floor(Math.random() * 5));
-            const complementaryImages: string[] = this.generateComplementaryImages(Math.floor(Math.random() * 5));
-            const priceNew = Math.floor(Math.random() * 100) + 1;
-            const urlNew = `http://example.com/${itemId}-new.jpg`;
-            const category = Const.CATEGORIES[Math.floor(Math.random() * Const.CATEGORIES.length)];
-            const location = `Location ${Math.floor(Math.random() * 10)}`;
 
-            const item = new Item(itemId, name, price, quantity, shortDescription, longDescription, missingParts, defects, accessories, condition, brand, model, thumbnailUrl, tags, complementaryImages, priceNew, urlNew, category, location);
-
-            const transactions: Transaction[] = [];
-
-            for (let j = 0; j < Math.floor(Math.random() * 6); j++) {
-                const transactionId = `transaction-${i}-${j}`;
-                const itemId = item.itemId;
-                const quantity = Math.floor(Math.random() * 3) + 1;
-                const description = `Transaction for ${item.name}`;
-                const category = item.category;
-                const totalPrice = item.price * quantity;
-                const transactionDate = new Date();
-                const paymentMethod = Const.PAYMENT_METHODS[Math.floor(Math.random() * Const.PAYMENT_METHODS.length)];
-                const fullfillmentMethod = Const.FULLFILLMENT_METHODS[Math.floor(Math.random() * Const.FULLFILLMENT_METHODS.length)];
-                const status = Math.random() > 0.5 ? "completed" : "pending";
-                const buyerName = `Buyer ${Math.floor(Math.random() * 10)}`;
-                const transaction = new Transaction(transactionId, itemId, quantity, description, category, totalPrice, transactionDate, paymentMethod, fullfillmentMethod, status, buyerName);
-                transactions.push(transaction);
-            }
-
-            this.addSystemInfo(new SystemInfo(item, transactions));
-
-        }
+    serialize() {
     }
 }
 

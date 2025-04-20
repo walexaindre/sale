@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Part } from "../../shared/parser";
+    import type { Part } from "../../shared/parser.svelte";
     import { imageSrc } from "./Transition.svelte";
 
     let { part }: { part: Part } = $props();

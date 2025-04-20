@@ -1,8 +1,9 @@
-import { System } from "../shared/parser";
+import { System } from "../shared/parser.svelte";
 
 
 
 export let Data = $state({ sys: new System() });
+
 
 export enum Actions {
     CreateItem = 1,
