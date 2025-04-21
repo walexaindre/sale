@@ -568,6 +568,15 @@ export class SystemInfo extends Item {
         }
     }
 
+
+    setCreatedAt(date: Date): void {
+        this.createdAt = date;
+    }
+
+    setUpdatedAt(date: Date): void {
+        this.updatedAt = date;
+    }
+
     greaterThan(other: SystemInfo): boolean {
         return this.compareTo(other) > 0;
     }
@@ -591,6 +600,37 @@ export class System {
             || systemInfo.tags.some(tag => tag.toLowerCase().includes(text.toLowerCase()))
             || systemInfo.shortDescription.toLowerCase().includes(text.toLowerCase())
             || systemInfo.longDescription.toLowerCase().includes(text.toLowerCase()));
+    }
+
+    serializeItems(): string {
+        const items = this.systemInfo.map((systemInfo) => systemInfo.getItem());
+        return JSON.stringify(items);
+    }
+
+    serializeTransactions(): string {
+        const transactions = this.systemInfo.map((systemInfo) => systemInfo.getTransactions()).flat(2);
+        return JSON.stringify(transactions);
+    }
+
+
+    static deserialize(items: string, transactions: string): System {
+        const system = new System();
+        const itemsArray = JSON.parse(items);
+        const transactionsArray = JSON.parse(transactions);
+        const kvstore: { [key: string]: SystemInfo } = {};
+        const store: Array<SystemInfo> = [];
+        for (const item of itemsArray) {
+            const rsitem = new Item(item.itemId, item.name, item.price, item.quantity, item.shortDescription, item.longDescription, item.missingParts, item.defects, item.accessories, item.condition, item.brand, item.model, item.thumbnailUrl, item.tags, item.complementaryImages, item.priceNew, item.urlNew, item.category, item.location);
+            const transactions: Transaction[] = transactionsArray.filter((transaction: Transaction) => transaction.itemId === item.itemId).map((transaction: Transaction) => Transaction.fromJson(transaction));
+            const systemInfo = new SystemInfo(rsitem, transactions);
+            systemInfo.updatedAt = item.updatedAt;
+            systemInfo.createdAt = item.createdAt;
+            kvstore[item.itemId] = systemInfo;
+            insert(systemInfo, store);
+        }
+        system.systemInfo = store;
+        system.system = kvstore;
+        return system;
     }
 
     constructor() {
@@ -703,9 +743,4 @@ export class System {
     static emptySystem(): System {
         return new System();
     }
-
-
-    serialize() {
-    }
 }
-

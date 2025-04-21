@@ -3,10 +3,31 @@
     import { Data } from "./Store.svelte";
     import SummarizedPart from "./SummarizedPart.svelte";
 
+    import { downloadFile } from "../shared/downloader";
+
+    let downloadItems = () => {
+        downloadFile(
+            "items.json",
+            "application/json",
+            Data.sys.serializeItems(),
+        );
+    };
+
+    let downloadTransactions = () => {
+        downloadFile(
+            "transactions.json",
+            "application/json",
+            Data.sys.serializeTransactions(),
+        );
+    };
+
     let pag: Pagination = new Pagination(1, 25, Data.sys);
 </script>
 
-<button class="btn" onclick={Data.sys.serialize}>Serialize</button>
+<button class="btn" onclick={downloadItems}> Download Item! </button>
+<button class="btn" onclick={downloadTransactions}>
+    Download Transactions!
+</button>
 
 {#if Data.sys.systemInfo.length}
     <div class="grid grid-cols-1 gap-2">
